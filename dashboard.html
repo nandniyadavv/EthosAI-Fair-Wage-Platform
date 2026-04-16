@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EthosAI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+<button onclick="toggleDarkMode()" style="position:absolute; top:20px; right:20px;">
+    🌙
+</button>
+ 
+<div class="dashboard-container">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>EthosAI Dashboard</h1>
+        <p>Welcome, User 👋</p>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards">
+        <div class="card">
+            <h3>🧾 Last Wage</h3>
+            <p id="lastWage">₹0</p>
+        </div>
+        <div class="card">
+            <h3>💰 Earnings</h3>
+            <p id="earnings">₹0</p>
+        </div>
+
+        <div class="card">
+            <h3>📋 Tasks</h3>
+            <p>5 Active</p>
+        </div>
+
+        <div class="card">
+            <h3>⭐ Performance</h3>
+            <p id="performance">0%</p>
+        </div>
+
+    </div>
+
+    <!-- Tasks -->
+    <div class="tasks">
+        <h2>Assigned Tasks</h2>
+
+        <!-- ✅ Progress Box -->
+        <div class="progress-box">
+            <p>Progress</p>
+            <p id="progressText">0%</p>
+            <div class="progress-bar">
+                <div id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Tasks -->
+        <div class="task">
+            <span>Data Labeling (High)</span>
+            <button>Complete</button>
+        </div>
+
+        <div class="task">
+            <span>Bug Fixing (Medium)</span>
+            <button>Complete</button>
+        </div>
+
+        <div class="task">
+            <span>Content Review (Low)</span>
+            <button>Complete</button>
+        </div>
+
+    </div>
+    <button onclick="resetData()">🔄 Reset Progress</button>
+
+    <!-- Button -->
+    <button onclick="window.location.href='wage.html'" style="margin-top:20px;">
+        💰 Calculate Wage
+    </button>
+
+</div>
+
+<script>
+
+let earnings = Number(localStorage.getItem("earnings")) || 0;
+document.getElementById("earnings").innerText = "₹" + earnings;
+
+const user = localStorage.getItem("user");
+if (user) {
+    document.querySelector(".header p").innerText = "Welcome, " + user + " 👋";
+}
+
+let totalTasks = 3;
+let completedTasks = Number(localStorage.getItem("completedTasks")) || 0;
+
+function updateDashboard() {
+    let percent = (completedTasks / totalTasks) * 100;
+
+    document.getElementById("progressFill").style.width = percent + "%";
+    document.getElementById("progressText").innerText = Math.round(percent) + "%";
+    document.getElementById("performance").innerText = Math.round(percent) + "%";
+}
+
+updateDashboard();
+
+document.querySelectorAll(".task button").forEach(btn => {
+    btn.addEventListener("click", function () {
+
+        if (this.classList.contains("done")) return;
+
+        this.classList.add("done");
+        this.innerText = "Done ✔";
+        this.style.background = "green";
+
+        earnings += 500;
+        localStorage.setItem("earnings", earnings);
+        document.getElementById("earnings").innerText = "₹" + earnings;
+
+        completedTasks++;
+        localStorage.setItem("completedTasks", completedTasks);
+
+        updateDashboard();
+    });
+});
+
+function resetData() {
+    localStorage.clear();
+    location.reload();
+}
+
+let lastWage = localStorage.getItem("lastWage") || 0;
+document.getElementById("lastWage").innerText = "₹" + lastWage;
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+}
+</script>
+
+</body>
+</html>
